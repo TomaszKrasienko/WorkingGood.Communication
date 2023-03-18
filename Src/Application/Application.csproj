@@ -1,0 +1,35 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="CQRS\" />
+    <None Remove="CQRS\RegisterMessage\" />
+    <None Remove="Common\" />
+    <None Remove="Common\Extension\" />
+    <None Remove="Common\Extensions\Configuration\" />
+    <None Remove="CQRS\RegisterMessage\Commands\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="CQRS\" />
+    <Folder Include="CQRS\RegisterMessage\" />
+    <Folder Include="Common\" />
+    <Folder Include="Common\Extensions\" />
+    <Folder Include="Common\Extensions\Configuration\" />
+    <Folder Include="CQRS\RegisterMessage\Commands\" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="MediatR" Version="12.0.1" />
+    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="11.1.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="7.0.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Domain\Domain.csproj" />
+    <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
+  </ItemGroup>
+</Project>

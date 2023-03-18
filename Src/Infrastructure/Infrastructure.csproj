@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <None Remove="Common\" />
+      <None Remove="Common\ConfigModels\" />
+      <None Remove="Communication\" />
+      <None Remove="Communication\Email\" />
+    </ItemGroup>
+    <ItemGroup>
+      <Folder Include="Common\" />
+      <Folder Include="Common\ConfigModels\" />
+      <Folder Include="Communication\" />
+      <Folder Include="Communication\Email\" />
+    </ItemGroup>
+    <ItemGroup>
+      <ProjectReference Include="..\Domain\Domain.csproj" />
+    </ItemGroup>
+    <ItemGroup>
+      <PackageReference Include="MailKit" Version="3.6.0" />
+      <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="7.0.0" />
+      <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="7.0.4" />
+      <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
+    </ItemGroup>
+</Project>
