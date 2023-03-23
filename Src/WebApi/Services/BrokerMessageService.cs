@@ -1,5 +1,6 @@
 ﻿using System;
 using Application.CQRS.RegisterMessage.Commands;
+using Application.CQRS.RegisterMessage.Commands.ForgotPasswordMessage;
 using MediatR;
 using Newtonsoft.Json;
 
@@ -14,17 +15,28 @@ namespace WebApi.Services
 			_logger = logger;
 			_serviceScopeFactory = serviceScopeFactory;
 		}
-        public async Task Handle(string message)
+        public async Task Handle(string message, string queueName)
         {
 			_logger.LogInformation("Handling message from broker");
 			IMediator mediator;
-	        INotification registerMessageCommand =
-		        JsonConvert.DeserializeObject<RegisterMessageCommand>(message)!;			
-	        using (var scope = _serviceScopeFactory.CreateScope())
-	        {
-                mediator = scope.ServiceProvider.GetService<IMediator>()!;
-		        await mediator.Publish(registerMessageCommand);
-	        }
+			if (queueName == "register")
+			{
+				INotification registerMessageCommand = JsonConvert.DeserializeObject<RegisterMessageCommand>(message)!;
+				using (var scope = _serviceScopeFactory.CreateScope())
+				{
+					mediator = scope.ServiceProvider.GetService<IMediator>()!;
+					await mediator.Publish(registerMessageCommand);
+				}
+			}
+			else if (queueName == "reset_password")
+			{
+				INotification forgotPasswordCommand = JsonConvert.DeserializeObject<ForgotPasswordCommand>(message)!;
+				using (var scope = _serviceScopeFactory.CreateScope())
+				{
+					mediator = scope.ServiceProvider.GetService<IMediator>()!;
+					await mediator.Publish(forgotPasswordCommand);
+				}
+			}
         }
     }
 }

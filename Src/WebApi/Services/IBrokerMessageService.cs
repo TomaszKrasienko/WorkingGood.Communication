@@ -4,7 +4,7 @@ namespace WebApi.Services
 {
 	public interface IBrokerMessageService
 	{
-		Task Handle(string message);
+		Task Handle(string message, string queueName);
 	}
 }
 

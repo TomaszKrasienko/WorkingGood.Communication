@@ -58,7 +58,7 @@ namespace WebApi.HostedServices
         }
         private async Task HandleMessage(string content, string routingKey)
         {
-            await _brokerMessageService.Handle(content);
+            await _brokerMessageService.Handle(content, routingKey);
         }
     }
 }
