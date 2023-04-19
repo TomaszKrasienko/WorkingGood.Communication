@@ -1,5 +1,6 @@
 using Application.Common.Extensions.Configuration;
 using Infrastructure.Common.Extensions.Configuration;
+using Infrastructure.Communication.Broker;
 using WebApi.HostedServices;
 using WebApi.Services;
 
@@ -13,7 +14,8 @@ public static class ServicesConfiguration
             .AddInfrastructureConfiguration(configuration)
             .AddApplicationConfiguration(configuration)
             .ConfigureServices()
-            .ConfigureHostedServices();
+            .ConfigureHostedServices()
+            .ConfigureSwagger();
         return services;
     }
     private static IServiceCollection ConfigureServices(this IServiceCollection services)

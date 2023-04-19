@@ -19,8 +19,8 @@ namespace WebApi.HostedServices
 		public BrokerService(IServiceScopeFactory scopeFactory, RabbitMqConfig rabbitMqConfig)
 		{
             _rabbitMqConfig = rabbitMqConfig;
-            InitializeConnection();
             InitializeServices(scopeFactory);
+            InitializeConnection();
 		}
         private void InitializeServices(IServiceScopeFactory scopeFactory)
         {

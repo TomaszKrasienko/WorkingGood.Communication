@@ -26,6 +26,7 @@ public static class InfrastructureConfiguration
         services.AddScoped<IEmailSender, EmailSender>();
         services.AddScoped<IMongoDbContext, MongoDbContext>();
         services.AddScoped<IEmailLogRepository, EmailLogRepository>();
+        services.AddScoped<IBrokerInitializer, BrokerInitializer>();
         return services;
     }
     private static IServiceCollection ConfigureConfigs(this IServiceCollection services, IConfiguration configuration)
