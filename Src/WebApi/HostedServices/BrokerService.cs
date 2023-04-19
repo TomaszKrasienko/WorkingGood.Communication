@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Text;
 using Infrastructure.Common.ConfigModels;
+using Infrastructure.Communication.Broker;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using WebApi.Services;
@@ -11,6 +12,7 @@ namespace WebApi.HostedServices
 	{
         private readonly RabbitMqConfig _rabbitMqConfig;
         private IBrokerMessageService? _brokerMessageService;
+        private IBrokerInitializer? _brokerInitializer;
         private ConnectionFactory? _connectionFactory;
         private IConnection? _connection;
         private IModel? _channel;
@@ -20,23 +22,17 @@ namespace WebApi.HostedServices
             InitializeConnection();
             InitializeServices(scopeFactory);
 		}
-
         private void InitializeServices(IServiceScopeFactory scopeFactory)
         {
             using (var scope = scopeFactory.CreateScope())
             {
                 _brokerMessageService = scope.ServiceProvider.GetRequiredService<IBrokerMessageService>();
+                _brokerInitializer = scope.ServiceProvider.GetRequiredService<IBrokerInitializer>();
             }
         }
         private void InitializeConnection()
         {
-            _connectionFactory = new ConnectionFactory
-            {
-                HostName = _rabbitMqConfig.Host,
-                Port = _rabbitMqConfig.Port,
-                UserName = _rabbitMqConfig.UserName,
-                Password = _rabbitMqConfig.Password
-            };
+            _connectionFactory = _brokerInitializer!.Initialize();
             _connection = _connectionFactory.CreateConnection();
             _channel = _connection.CreateModel();
         }
@@ -58,7 +54,7 @@ namespace WebApi.HostedServices
         }
         private async Task HandleMessage(string content, string routingKey)
         {
-            await _brokerMessageService.Handle(content, routingKey);
+            await _brokerMessageService!.Handle(content, routingKey);
         }
     }
 }

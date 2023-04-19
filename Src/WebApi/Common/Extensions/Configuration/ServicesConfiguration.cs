@@ -12,7 +12,19 @@ public static class ServicesConfiguration
         services
             .AddInfrastructureConfiguration(configuration)
             .AddApplicationConfiguration(configuration)
-            .AddSingleton<IBrokerMessageService, BrokerMessageService>()
+            .ConfigureServices()
+            .ConfigureHostedServices();
+        return services;
+    }
+    private static IServiceCollection ConfigureServices(this IServiceCollection services)
+    {
+        services
+            .AddSingleton<IBrokerMessageService, BrokerMessageService>();
+        return services;
+    }
+    private static IServiceCollection ConfigureHostedServices(this IServiceCollection services)
+    {
+        services
             .AddHostedService<BrokerService>();
         return services;
     }

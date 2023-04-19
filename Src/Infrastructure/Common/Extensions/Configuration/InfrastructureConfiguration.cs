@@ -1,6 +1,7 @@
 using Domain.Interfaces.Communication;
 using Domain.Interfaces.Repository;
 using Infrastructure.Common.ConfigModels;
+using Infrastructure.Communication.Broker;
 using Infrastructure.Communication.Email;
 using Infrastructure.Persistance;
 using Infrastructure.Persistance.Repositories;
@@ -14,6 +15,21 @@ public static class InfrastructureConfiguration
     public static IServiceCollection AddInfrastructureConfiguration(this IServiceCollection services,
         IConfiguration configuration)
     {
+        services
+            .ConfigureConfigs(configuration)
+            .ConfigureServices();
+        return services;
+    }
+    private static IServiceCollection ConfigureServices(this IServiceCollection services)
+    {
+        services.AddScoped<IBrokerInitializer, BrokerInitializer>();
+        services.AddScoped<IEmailSender, EmailSender>();
+        services.AddScoped<IMongoDbContext, MongoDbContext>();
+        services.AddScoped<IEmailLogRepository, EmailLogRepository>();
+        return services;
+    }
+    private static IServiceCollection ConfigureConfigs(this IServiceCollection services, IConfiguration configuration)
+    {
         EmailConfig emailConfig = new();
         configuration.Bind("Email", emailConfig);
         services.AddSingleton(emailConfig);
@@ -26,9 +42,6 @@ public static class InfrastructureConfiguration
         EmailLogConfig emailLogConfig = new();
         configuration.Bind("EmailLogConnection", emailLogConfig);
         services.AddSingleton(emailLogConfig);
-        services.AddScoped<IEmailSender, EmailSender>();
-        services.AddScoped<IMongoDbContext, MongoDbContext>();
-        services.AddScoped<IEmailLogRepository, EmailLogRepository>();
         return services;
-    } 
+    }
 }
