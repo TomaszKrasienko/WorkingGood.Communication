@@ -14,7 +14,6 @@ namespace WebApi.HostedServices
         private readonly RabbitMqConfig _rabbitMqConfig;
         private readonly IPooledObjectPolicy<IModel> _pooledObjectPolicy;
         private IBrokerMessageService? _brokerMessageService;
-        private IConnection? _connection;
         private IModel? _channel;
 		public BrokerService(IServiceScopeFactory scopeFactory, RabbitMqConfig rabbitMqConfig, IPooledObjectPolicy<IModel> pooledObjectPolicy)
 		{
