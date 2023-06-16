@@ -1,9 +1,7 @@
 ﻿using Domain.Entities;
 using Domain.Enums;
 using Domain.Interfaces.Communication;
-using Domain.Interfaces.Communication.Broker;
 using Domain.Interfaces.Communication.EmailTemplates;
-using Domain.Interfaces.Repository;
 using MediatR;
 using WorkingGood.Log;
 
@@ -13,17 +11,14 @@ public class RegisterMessageCommandHandler : INotificationHandler<RegisterMessag
 		private readonly IWgLog<RegisterMessageCommandHandler> _logger;
 		private readonly IEmailTemplateDownloader _emailTemplateDownloader;
 		private readonly IEmailSender _emailSender;
-		private readonly IEmailLogSender _emailLogSender;
 		public RegisterMessageCommandHandler(
 			IWgLog<RegisterMessageCommandHandler> logger,
 			IEmailTemplateDownloader emailTemplateDownloader,
-			IEmailSender emailSender,
-			IEmailLogSender emailLogSender)
+			IEmailSender emailSender)
 		{
 			_logger = logger;
 			_emailTemplateDownloader = emailTemplateDownloader;
 			_emailSender = emailSender;
-			_emailLogSender = emailLogSender;
 		}
 		public async Task Handle(RegisterMessageCommand notification, CancellationToken cancellationToken)
 		{

@@ -1,7 +1,4 @@
-
-
 using Domain.Interfaces.Communication;
-using Domain.Interfaces.Communication.Broker;
 using Domain.Interfaces.Communication.EmailTemplates;
 using Infrastructure.Common.ConfigModels;
 using Infrastructure.Common.Statics;
@@ -36,7 +33,6 @@ public static class InfrastructureConfiguration
             .AddScoped<IEmailSender, EmailSender>()
             .AddScoped<IMongoDbContext, MongoDbContext>()
             .AddSingleton<IPooledObjectPolicy<IModel>, RabbitModelPooledObjectPolicy>()
-            .AddScoped<IEmailLogSender, EmailLogSender>()
             .AddScoped<IRabbitManager, RabbitManager>()
             .AddScoped<IEmailTemplateDownloader, EmailTemplateDownloader>();
     }

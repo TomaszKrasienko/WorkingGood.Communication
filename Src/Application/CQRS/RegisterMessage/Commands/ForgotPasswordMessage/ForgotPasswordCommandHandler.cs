@@ -1,7 +1,6 @@
 using Domain.Entities;
 using Domain.Enums;
 using Domain.Interfaces.Communication;
-using Domain.Interfaces.Communication.Broker;
 using Domain.Interfaces.Communication.EmailTemplates;
 using MediatR;
 using WorkingGood.Log;
@@ -12,17 +11,14 @@ public class ForgotPasswordCommandHandler : INotificationHandler<ForgotPasswordC
 {
     private readonly IWgLog<ForgotPasswordCommandHandler> _logger;
     private readonly IEmailSender _emailSender;
-    private readonly IEmailLogSender _emailLogSender;
     private readonly IEmailTemplateDownloader _emailTemplateDownloader;
     public ForgotPasswordCommandHandler(
         IWgLog<ForgotPasswordCommandHandler> logger,
         IEmailSender emailSender,
-        IEmailLogSender emailLogSender,
         IEmailTemplateDownloader emailTemplateDownloader)
     {
         _logger = logger;
         _emailSender = emailSender;
-        _emailLogSender = emailLogSender;
         _emailTemplateDownloader = emailTemplateDownloader;
     }
     public async Task Handle(ForgotPasswordCommand notification, CancellationToken cancellationToken)
