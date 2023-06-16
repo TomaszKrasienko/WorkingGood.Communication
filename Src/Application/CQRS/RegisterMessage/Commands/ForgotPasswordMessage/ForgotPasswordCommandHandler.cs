@@ -3,9 +3,7 @@ using Domain.Enums;
 using Domain.Interfaces.Communication;
 using Domain.Interfaces.Communication.Broker;
 using Domain.Interfaces.Communication.EmailTemplates;
-using Domain.Interfaces.Repository;
 using MediatR;
-using Microsoft.Extensions.Logging;
 using WorkingGood.Log;
 
 namespace Application.CQRS.RegisterMessage.Commands.ForgotPasswordMessage;
@@ -37,12 +35,7 @@ public class ForgotPasswordCommandHandler : INotificationHandler<ForgotPasswordC
             notification.ForgotPasswordUrl!, 
             notification.FirstName!,
             notification.LastName!);
-        await _emailLogSender.Send(new EmailLog()
-        {
-            Content = messageContent,
-            Type = MessageDestinations.ForgotPasswordEmail.ToString(),
-            EmailAddress = notification.Email!
-        });
+        _logger.Email(MessageDestinations.ForgotPasswordEmail.ToString(), notification.Email!, notification.ForgotPasswordUrl!);
         await _emailSender.Send(
             messageContent,
             "Reset password",

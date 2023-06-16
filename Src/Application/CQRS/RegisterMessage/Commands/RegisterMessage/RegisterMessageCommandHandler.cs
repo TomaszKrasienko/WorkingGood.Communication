@@ -30,12 +30,7 @@ public class RegisterMessageCommandHandler : INotificationHandler<RegisterMessag
 			_logger.Info($"Handling {nameof(RegisterMessageCommandHandler)}");
 			EmailTemplate htmlTemplate = await _emailTemplateDownloader.GetByDestination(MessageDestinations.RegisterEmail);
 			string messageContent = GetContent(htmlTemplate.Content, notification.RegistrationUrl!);
-			await _emailLogSender.Send(new EmailLog()
-			{
-				Content = messageContent,
-				Type = MessageDestinations.RegisterEmail.ToString(),
-				EmailAddress = notification.Email!
-			});
+			_logger.Email(MessageDestinations.RegisterEmail.ToString(), notification.Email!, notification.RegistrationUrl!);
 			await _emailSender.Send(
 				messageContent,
 				"Confirm account",
