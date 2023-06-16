@@ -3,21 +3,22 @@ using Application.CQRS.RegisterMessage.Commands;
 using Application.CQRS.RegisterMessage.Commands.ForgotPasswordMessage;
 using MediatR;
 using Newtonsoft.Json;
+using WorkingGood.Log;
 
 namespace WebApi.Services
 {
 	public class BrokerMessageService : IBrokerMessageService
     {
-        private readonly ILogger<BrokerMessageService> _logger;
+        private readonly IWgLog<BrokerMessageService> _logger;
         private readonly IServiceScopeFactory _serviceScopeFactory;
-		public BrokerMessageService(ILogger<BrokerMessageService> logger, IServiceScopeFactory serviceScopeFactory)
+		public BrokerMessageService(IWgLog<BrokerMessageService> logger, IServiceScopeFactory serviceScopeFactory)
 		{
 			_logger = logger;
 			_serviceScopeFactory = serviceScopeFactory;
 		}
         public async Task Handle(string message, string queueName)
         {
-			_logger.LogInformation("Handling message from broker");
+			_logger.Info("Handling message from broker");
 			IMediator mediator;
 			if (queueName == "register")
 			{
@@ -36,6 +37,10 @@ namespace WebApi.Services
 					mediator = scope.ServiceProvider.GetService<IMediator>()!;
 					await mediator.Publish(forgotPasswordCommand);
 				}
+			}
+			else
+			{
+				_logger.Warn("The queue name is not recognized");
 			}
         }
     }

@@ -1,0 +1,12 @@
+version: '3.7'
+services:
+  communication:
+    container_name: working-good-communication
+    build: ./
+    ports: 
+      - 30012:80
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+networks: 
+  default:
+    name: working-good

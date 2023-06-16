@@ -1,34 +1,50 @@
 ﻿using Domain.Entities;
+using Domain.Enums;
 using Domain.Interfaces.Communication;
+using Domain.Interfaces.Communication.Broker;
+using Domain.Interfaces.Communication.EmailTemplates;
 using Domain.Interfaces.Repository;
 using MediatR;
-using Microsoft.Extensions.Logging;
+using WorkingGood.Log;
 
 namespace Application.CQRS.RegisterMessage.Commands.RegisterMessage;
 public class RegisterMessageCommandHandler : INotificationHandler<RegisterMessageCommand>
 {
-		private readonly ILogger<RegisterMessageCommandHandler> _logger;
+		private readonly IWgLog<RegisterMessageCommandHandler> _logger;
+		private readonly IEmailTemplateDownloader _emailTemplateDownloader;
 		private readonly IEmailSender _emailSender;
-		private readonly IEmailLogRepository _emailLogRepository;
-		public RegisterMessageCommandHandler(ILogger<RegisterMessageCommandHandler> logger, IEmailSender emailSender, IEmailLogRepository emailLogRepository)
+		private readonly IEmailLogSender _emailLogSender;
+		public RegisterMessageCommandHandler(
+			IWgLog<RegisterMessageCommandHandler> logger,
+			IEmailTemplateDownloader emailTemplateDownloader,
+			IEmailSender emailSender,
+			IEmailLogSender emailLogSender)
 		{
 			_logger = logger;
+			_emailTemplateDownloader = emailTemplateDownloader;
 			_emailSender = emailSender;
-			_emailLogRepository = emailLogRepository;
+			_emailLogSender = emailLogSender;
 		}
 		public async Task Handle(RegisterMessageCommand notification, CancellationToken cancellationToken)
 		{
-			_logger.LogInformation("Handling RegisterMessageCommand");
-			await _emailLogRepository.AddLog(new EmailLog
+			_logger.Info($"Handling {nameof(RegisterMessageCommandHandler)}");
+			EmailTemplate htmlTemplate = await _emailTemplateDownloader.GetByDestination(MessageDestinations.RegisterEmail);
+			string messageContent = GetContent(htmlTemplate.Content, notification.RegistrationUrl!);
+			await _emailLogSender.Send(new EmailLog()
 			{
-				Content = $"Your verification token: {notification.RegistrationToken}",
-				Type = "Register",
+				Content = messageContent,
+				Type = MessageDestinations.RegisterEmail.ToString(),
 				EmailAddress = notification.Email!
 			});
 			await _emailSender.Send(
-				$"Your verification token: {notification.RegistrationToken}",
+				messageContent,
 				"Confirm account",
 				notification.Email!);
+		}
+
+		private string GetContent(string htmlContent, string registrationLink)
+		{
+			return htmlContent.Replace("[link]", registrationLink);
 		}
     }
 

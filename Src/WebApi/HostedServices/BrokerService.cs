@@ -2,6 +2,7 @@
 using System.Text;
 using Infrastructure.Common.ConfigModels;
 using Infrastructure.Communication.Broker;
+using Microsoft.Extensions.ObjectPool;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using WebApi.Services;
@@ -11,14 +12,14 @@ namespace WebApi.HostedServices
 	public class BrokerService : BackgroundService
 	{
         private readonly RabbitMqConfig _rabbitMqConfig;
+        private readonly IPooledObjectPolicy<IModel> _pooledObjectPolicy;
         private IBrokerMessageService? _brokerMessageService;
-        private IBrokerInitializer? _brokerInitializer;
-        private ConnectionFactory? _connectionFactory;
         private IConnection? _connection;
         private IModel? _channel;
-		public BrokerService(IServiceScopeFactory scopeFactory, RabbitMqConfig rabbitMqConfig)
+		public BrokerService(IServiceScopeFactory scopeFactory, RabbitMqConfig rabbitMqConfig, IPooledObjectPolicy<IModel> pooledObjectPolicy)
 		{
             _rabbitMqConfig = rabbitMqConfig;
+            _pooledObjectPolicy = pooledObjectPolicy;
             InitializeServices(scopeFactory);
             InitializeConnection();
 		}
@@ -27,14 +28,11 @@ namespace WebApi.HostedServices
             using (var scope = scopeFactory.CreateScope())
             {
                 _brokerMessageService = scope.ServiceProvider.GetRequiredService<IBrokerMessageService>();
-                _brokerInitializer = scope.ServiceProvider.GetRequiredService<IBrokerInitializer>();
             }
         }
         private void InitializeConnection()
         {
-            _connectionFactory = _brokerInitializer!.Initialize();
-            _connection = _connectionFactory.CreateConnection();
-            _channel = _connection.CreateModel();
+            _channel = _pooledObjectPolicy.Create();
         }
         protected override Task ExecuteAsync(CancellationToken stoppingToken)
         {

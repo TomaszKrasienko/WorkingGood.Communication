@@ -3,6 +3,7 @@ using Infrastructure.Common.Extensions.Configuration;
 using Infrastructure.Communication.Broker;
 using WebApi.HostedServices;
 using WebApi.Services;
+using WorkingGood.Log.Configuration;
 
 namespace WebApi.Common.Extensions.Configuration;
 
@@ -15,7 +16,8 @@ public static class ServicesConfiguration
             .AddApplicationConfiguration(configuration)
             .ConfigureServices()
             .ConfigureHostedServices()
-            .ConfigureSwagger();
+            .ConfigureSwagger()
+            .UseWgLog(configuration, "WorkingGood.Communication");
         return services;
     }
     private static IServiceCollection ConfigureServices(this IServiceCollection services)
