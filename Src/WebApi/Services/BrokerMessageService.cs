@@ -1,4 +1,5 @@
 ﻿using System;
+using Application.CQRS.ApplicationsMessages.Commands.ApplicationConfirmation;
 using Application.CQRS.RegisterMessage.Commands;
 using Application.CQRS.RegisterMessage.Commands.ForgotPasswordMessage;
 using MediatR;
@@ -18,6 +19,7 @@ namespace WebApi.Services
 		}
         public async Task Handle(string message, string queueName)
         {
+			//Todo: W argumentach powinno być routingKey a nie queue name
 			_logger.Info("Handling message from broker");
 			IMediator mediator;
 			if (queueName == "register")
@@ -36,6 +38,15 @@ namespace WebApi.Services
 				{
 					mediator = scope.ServiceProvider.GetService<IMediator>()!;
 					await mediator.Publish(forgotPasswordCommand);
+				}
+			}
+			else if (queueName == "application-confirmation")
+			{
+				INotification applicationConfirmationCommand = JsonConvert.DeserializeObject<ApplicationConfirmationCommand>(message)!;
+				using (var scope = _serviceScopeFactory.CreateScope())
+				{
+					mediator = scope.ServiceProvider.GetService<IMediator>()!; 
+					await mediator.Send(applicationConfirmationCommand);
 				}
 			}
 			else

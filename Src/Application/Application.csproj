@@ -13,14 +13,20 @@
     <None Remove="Common\Extension\" />
     <None Remove="Common\Extensions\Configuration\" />
     <None Remove="CQRS\RegisterMessage\Commands\" />
+    <None Remove="CQRS\ApplicationsMessages\" />
+    <None Remove="CQRS\ApplicationsMessages\Commands\" />
+    <None Remove="CQRS\ApplicationsMessages\Commands\ApplicationConfirmation\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="CQRS\" />
-    <Folder Include="CQRS\RegisterMessage\" />
+    <Folder Include="CQRS\ApiMessages\" />
     <Folder Include="Common\" />
     <Folder Include="Common\Extensions\" />
     <Folder Include="Common\Extensions\Configuration\" />
-    <Folder Include="CQRS\RegisterMessage\Commands\" />
+    <Folder Include="CQRS\ApiMessages\Commands\" />
+    <Folder Include="CQRS\ApplicationsMessages\" />
+    <Folder Include="CQRS\ApplicationsMessages\Commands\" />
+    <Folder Include="CQRS\ApplicationsMessages\Commands\ApplicationConfirmation\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="MediatR" Version="12.0.1" />

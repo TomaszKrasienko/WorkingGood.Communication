@@ -41,7 +41,7 @@ public class ForgotPasswordCommandHandler : INotificationHandler<ForgotPasswordC
     private string GetContent(string htmlContent, string registrationLink, string firstName, string lastName)
     {
         return htmlContent
-            .Replace("[Link]", registrationLink)
+            .Replace("[link]", registrationLink)
             .Replace("[first_name]", firstName)
             .Replace("[last_name]", lastName);
     }
