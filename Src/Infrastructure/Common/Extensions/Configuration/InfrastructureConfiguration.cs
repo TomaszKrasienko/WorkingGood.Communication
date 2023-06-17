@@ -58,9 +58,16 @@ public static class InfrastructureConfiguration
             .RetryAsync(3);
         //Todo: Przerobić na configuration exception -> coś takiego 
         string toolServiceAddress = configuration.GetValue<string>("WorkingGoodToolAddress") ?? throw new Exception();
+        string apiServiceAddress = configuration.GetValue<string>("WorkingGoodApiAddress") ?? throw new Exception();
         services.AddHttpClient(HttpClients.WgTool, client =>
         {
             client.BaseAddress = new Uri(toolServiceAddress);
+            client.Timeout = new TimeSpan(0, 0, 30);
+            client.DefaultRequestHeaders.Clear();
+        }).AddPolicyHandler(retryPolicy);
+        services.AddHttpClient(HttpClients.WgApi, client =>
+        {
+            client.BaseAddress = new Uri(apiServiceAddress);
             client.Timeout = new TimeSpan(0, 0, 30);
             client.DefaultRequestHeaders.Clear();
         }).AddPolicyHandler(retryPolicy);

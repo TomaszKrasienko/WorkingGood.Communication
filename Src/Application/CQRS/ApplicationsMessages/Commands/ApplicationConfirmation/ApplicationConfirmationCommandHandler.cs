@@ -30,11 +30,14 @@ namespace Application.CQRS.ApplicationsMessages.Commands.ApplicationConfirmation
             EmailTemplate htmlTemplate =
                 await _emailTemplateDownloader.GetByDestination(MessageDestinations.ApplicationConfirmation);
             string offerTitle = string.Empty;
+            // GetContent(
+            //     htmlTemplate.Content, 
+            //     notification.OfferId)
             string messageContent = GetContent(
                 htmlTemplate.Content,
                 offerTitle,
-                notification.FirstName,
-                notification.LastName
+                notification.CandidateFirstName,
+                notification.CandidateLastName
             );
             _logger.Email(MessageDestinations.ApplicationConfirmation.ToString(), notification.CandidateEmail, notification.OfferId.ToString());
             await _emailSender.Send(
